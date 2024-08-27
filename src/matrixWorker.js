@@ -24,19 +24,54 @@ const handlers = {
     },
 
     /**
-     * @param {number[][]} a 
-     * @param {number[][]} b 
-     * @returns {{ type: string, body: { result: number[][] }}}
+     * @param {number[]} a 
+     * @param {number[]} b 
+     * @returns {{ type: string, body: { result: number[] }}}
      */
-    matrixMult: (a, b) => {
-        const c = matrix.mult(a, b);
+    arraySum: (a, b) => {
+        const c = a.map((val, i) => val + b[i]);
+        
         return {
             type: "result",
             body: {
                 result: c
             }
         }
-    }
+    },
+
+    /**
+     * @param {number[][]} a 
+     * @param {number[][]} b 
+     * @returns {{ type: string, body: { result: number[][] }}}
+     */
+    matrixMult: (a, b) => {
+        const c = matrix.mult(a, b);
+        
+        return {
+            type: "result",
+            body: {
+                result: c
+            }
+        }
+    },
+
+    /**
+     * @param {number[]} a 
+     * @param {number[]} b 
+     * @returns {{ type: string, body: { result: number }}}
+     */
+    arrayDot: (a, b) => {
+        let c = a
+            .map((val, i) => val + b[i])
+            .reduce((acc, cur) => acc + cur, 0);
+        
+        return {
+            type: "result",
+            body: {
+                result: c
+            }
+        }
+    },
 }
 
 /**
@@ -56,10 +91,28 @@ function handleMessage(message) {
             id: message.id,
             body: response
         });
+    } else if (message.type === "array_dot") {
+        const { a, b } = message.body;
+
+        const response = handlers.arrayDot(a, b);
+    
+        parentPort.postMessage({
+            id: message.id,
+            body: response
+        });
     } else if (message.type === "matrix_sum") {
         const { a, b } = message.body;
 
         const response = handlers.matrixSum(a, b);
+    
+        parentPort.postMessage({
+            id: message.id,
+            body: response
+        });
+    } else if (message.type === "array_sum") {
+        const { a, b } = message.body;
+
+        const response = handlers.arraySum(a, b);
     
         parentPort.postMessage({
             id: message.id,

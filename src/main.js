@@ -64,18 +64,17 @@ async function matrixMultThreaded(a, b, m) {
         for (let i = 0; i < m; i++) {
             // colunas
             for (let j = 0; j < m; j++) {
-                /** @type {number[][]} */
-                const lin = [a[i]];
-                /** @type {number[][]} */
+                /** @type {number[]} */
+                const lin = a[i];
+                /** @type {number[]} */
                 const col = [];
 
                 for (let k = 0; k < m; k++) {
-                    col[k] = [];
-                    col[k][0] = b[k][j];
+                    col[k] = b[k][j];
                 }
         
                 pool.enqueue({
-                    type: "matrix_mul",
+                    type: "array_dot",
                     body: {
                         a: lin, 
                         b: col
@@ -85,7 +84,7 @@ async function matrixMultThreaded(a, b, m) {
                         throw new Error("Tipo de mensagem não implementado" + message.type);
                 
                     if (!c[i]) c[i] = [];
-                    c[i][j] = message.body.result[0][0];
+                    c[i][j] = message.body.result;
                 
                     if(++count === size) {
                         pool.close();
@@ -112,13 +111,13 @@ async function matrixSumThreaded(a, b, m) {
 
         // linhas
         for (let i = 0; i < m; i++) {
-            /** @type {number[][]} */
-            const lin1 = [a[i]];
-            /** @type {number[][]} */
-            const lin2 = [b[i]];
+            /** @type {number[]} */
+            const lin1 = a[i];
+            /** @type {number[]} */
+            const lin2 = b[i];
     
             pool.enqueue({
-                type: "matrix_sum",
+                type: "array_sum",
                 body: {
                     a: lin1, 
                     b: lin2
@@ -127,7 +126,7 @@ async function matrixSumThreaded(a, b, m) {
                 if (message.type !== "result") 
                     throw new Error("Tipo de mensagem não implementado" + message.type);
             
-                c[i] = message.body.result[0];
+                c[i] = message.body.result;
             
                 if(++count === size) {
                     pool.close();
