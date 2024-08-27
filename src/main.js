@@ -4,7 +4,7 @@ const matrix = require('../lib/matrix');
 const { exit } = require('process');
 const workerPool = require('../lib/workerPool');
 
-const WORKERS = 1;
+const WORKERS = 4;
 
 if (!isMainThread) throw new Error("Main Thread não podem ser executado como Worker");
 
@@ -101,40 +101,6 @@ async function matrixMultThreaded(a, b, m) {
                 }
             });
         }
-
-        // // linhas
-        // for (let i = 0; i < m; i++) {
-        //     c[i] = [];
-        //     // colunas
-        //     for (let j = 0; j < m; j++) {
-        //         /** @type {number[]} */
-        //         const lin = a[i];
-        //         /** @type {number[]} */
-        //         const col = [];
-
-        //         for (let k = 0; k < m; k++) {
-        //             col[k] = b[k][j];
-        //         }
-        
-        //         pool.enqueue({
-        //             type: "array_dot",
-        //             body: {
-        //                 a: lin, 
-        //                 b: col
-        //             },
-        //         }, (message) => {
-        //             if (message.type !== "result") 
-        //                 throw new Error("Tipo de mensagem não implementado" + message.type);
-                
-        //             c[i][j] = message.body.result;
-                
-        //             if(++count === size) {
-        //                 pool.close();
-        //                 resolve(c);
-        //             }
-        //         });
-        //     }
-        // }
     });
 }
 

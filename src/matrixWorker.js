@@ -89,7 +89,7 @@ function handleMessage(message) {
     
         parentPort.postMessage({
             id: message.id,
-            body: response
+            response
         });
     } else if (message.type === "array_dot") {
         const { a, b } = message.body;
@@ -98,7 +98,7 @@ function handleMessage(message) {
     
         parentPort.postMessage({
             id: message.id,
-            body: response
+            response
         });
     } else if (message.type === "matrix_sum") {
         const { a, b } = message.body;
@@ -107,7 +107,7 @@ function handleMessage(message) {
     
         parentPort.postMessage({
             id: message.id,
-            body: response
+            response
         });
     } else if (message.type === "array_sum") {
         const { a, b } = message.body;
@@ -116,7 +116,7 @@ function handleMessage(message) {
     
         parentPort.postMessage({
             id: message.id,
-            body: response
+            response
         });
     } else if (message.type === "bulk_mult") {
         const { a, b, c, i, j } = message.body;
@@ -129,7 +129,7 @@ function handleMessage(message) {
 
         parentPort.postMessage({
             id: message.id,
-            body: {
+            response: {
                 type: "result",
                 body: {
                     result: c,
