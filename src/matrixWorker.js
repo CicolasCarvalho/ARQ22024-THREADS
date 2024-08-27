@@ -118,7 +118,44 @@ function handleMessage(message) {
             id: message.id,
             body: response
         });
+    } else if (message.type === "bulk_mult") {
+        const { a, b, c, i, j } = message.body;
+    
+        for (let k = i.min; k < i.max; k++) {
+            for (let l = j.min; l < j.max; l++) {
+                matrixMultStep(a, b, c, k, l); 
+            }
+        }
+
+        parentPort.postMessage({
+            id: message.id,
+            body: {
+                type: "result",
+                body: {
+                    result: c,
+                    i,
+                    j,
+                }
+            }
+        });
     }
 }
 
 parentPort.addListener("message", handleMessage)
+
+//-Utils------------------------------------------------------------------------
+
+/**
+ * @param {number[][]} a 
+ * @param {number[][]} b 
+ * @param {number[][]} c 
+ * @param {number} i 
+ * @param {number} j 
+ */
+function matrixMultStep(a, b, c, i, j) {
+    const lin = a[i];
+
+    c[i][j] = lin
+        .map((val, k) => val + b[k][j])
+        .reduce((acc, cur) => acc + cur, 0);
+}
