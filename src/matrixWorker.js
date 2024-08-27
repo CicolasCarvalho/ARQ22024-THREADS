@@ -7,6 +7,11 @@ if (isMainThread) throw new Error("Workers não podem ser executados como Main T
 if (!parentPort) throw new Error("Falha em se conectar com o Main Thread");
 
 const handlers = {
+    /**
+     * @param {number[][]} a 
+     * @param {number[][]} b 
+     * @returns {{ type: string, body: { result: number[][] }}}
+     */
     matrixSum: (a, b) => {
         const c = matrix.sum(a, b);
         
@@ -18,9 +23,13 @@ const handlers = {
         }
     },
 
+    /**
+     * @param {number[][]} a 
+     * @param {number[][]} b 
+     * @returns {{ type: string, body: { result: number[][] }}}
+     */
     matrixMult: (a, b) => {
         const c = matrix.mult(a, b);
-        
         return {
             type: "result",
             body: {

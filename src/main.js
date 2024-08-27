@@ -4,7 +4,7 @@ const matrix = require('../lib/matrix');
 const { exit } = require('process');
 const workerPool = require('../lib/workerPool');
 
-const WORKERS = 4;
+const WORKERS = 1;
 
 if (!isMainThread) throw new Error("Main Thread não podem ser executado como Worker");
 
@@ -19,22 +19,30 @@ if (!isMainThread) throw new Error("Main Thread não podem ser executado como Wo
     const a = matrix.random(m, m);
     const b = matrix.random(m, m);
 
-    console.log("Matriz A:", a);
-    console.log("Matriz B:", b);
+    // console.log("Matriz A:", a);
+    // console.log("Matriz B:", b);
 
     console.time("all");
 
     console.time("multiply");
-    const mul = await matrixMultThreaded(a, b, m);
+    matrix.mult(a, b);
     console.timeEnd("multiply");
 
-    console.log("A x B = ", mul);
+    console.time("multiply_thread");
+    const mul = await matrixMultThreaded(a, b, m);
+    console.timeEnd("multiply_thread");
+
+    // console.log("A x B = ", mul);
     
     console.time("sum");
-    const sum = await matrixSumThreaded(a, b, m);
+    matrix.sum(a, b);
     console.timeEnd("sum");
 
-    console.log("A + B = ", sum);
+    console.time("sum_thread");
+    const sum = await matrixSumThreaded(a, b, m);
+    console.timeEnd("sum_thread");
+
+    // console.log("A + B = ", sum);
 
     console.timeEnd("all");
 })();
@@ -89,6 +97,10 @@ async function matrixMultThreaded(a, b, m) {
     });
 }
 
+/**
+ * @param {number[][]} a 
+ * @param {number[][]} b 
+ */
 async function matrixSumThreaded(a, b, m) {
     const pool = workerPool(WORKERS, "./src/matrixWorker.js");
     let count = 0;
