@@ -138,6 +138,26 @@ function handleMessage(message) {
                 }
             }
         });
+    } else if (message.type === "bulk_sum") {
+        const { a, b, c, i, j } = message.body;
+    
+        for (let k = i.min; k < i.max; k++) {
+            for (let l = j.min; l < j.max; l++) {
+                c[k][l] = a[k][l] + b[k][l]; 
+            }
+        }
+
+        parentPort.postMessage({
+            id: message.id,
+            response: {
+                type: "result",
+                body: {
+                    result: c,
+                    i,
+                    j,
+                }
+            }
+        });
     }
 }
 

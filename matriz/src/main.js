@@ -90,11 +90,15 @@ async function matrixMultThreaded(a, b, m) {
                     j: jObj
                 },
             }, (message) => {
-                if (message.type !== "result") 
+                if (message.type !== "result")
                     throw new Error("Tipo de mensagem não implementado" + message.type);
-                
-                c = matrix.sum(message.body.result, c);
             
+                for (let k = iObj.min; k < iObj.max; k++) {
+                    for (let l = jObj.min; l < jObj.max; l++) {
+                        c[k][l] = message.body.result[k][l]; 
+                    }
+                }
+
                 if(++count === size) {
                     pool.close();
                     resolve(c);
